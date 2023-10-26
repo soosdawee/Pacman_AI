@@ -133,14 +133,14 @@ class GameState:
         """
         return self.generateSuccessor( 0, action )
 
-    def getPacmanState( self ):
+    def getPacmanState( self, agentIndex = 0 ):
         """
         Returns an AgentState object for pacman (in game.py)
 
         state.pos gives the current position
         state.direction gives the travel vector
         """
-        return self.data.agentStates[0].copy()
+        return self.data.agentStates[agentIndex].copy()
 
     def getPacmanPosition( self, agentIndex = 0 ):
         return self.data.agentStates[agentIndex].getPosition()
@@ -329,11 +329,11 @@ class PacmanRules:
     """
     PACMAN_SPEED=1
 
-    def getLegalActions( state ):
+    def getLegalActions( state, agentIndex=0 ):
         """
         Returns a list of possible actions.
         """
-        return Actions.getPossibleActions( state.getPacmanState().configuration, state.data.layout.walls )
+        return Actions.getPossibleActions( state.getPacmanState(agentIndex).configuration, state.data.layout.walls )
     getLegalActions = staticmethod( getLegalActions )
 
     def applyAction( state, action ):
@@ -341,6 +341,7 @@ class PacmanRules:
         Edits the state to reflect the results of the action.
         """
         legal = PacmanRules.getLegalActions( state )
+
         if action not in legal:
             raise Exception("Illegal action " + str(action))
 
@@ -638,7 +639,6 @@ def replayGame( layout, actions, display ):
     display.finish()
 
 def runGames( layout, pacman, pacman1, ghosts, display, numGames, record, numTraining = 0, catchExceptions=False, timeout=30 ):
-    print ghosts
     import __main__
     __main__.__dict__['_display'] = display
 

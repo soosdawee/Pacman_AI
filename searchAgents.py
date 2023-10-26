@@ -555,11 +555,13 @@ class CustomProblem:
       foodGrid:       a Grid (see game.py) of either True or False, specifying remaining food
     """
     def __init__(self, startingGameState):
-        self.start = (startingGameState.getPacmanPosition(), startingGameState.getPacmanPosition(1), startingGameState.getFood(), startingGameState.getCapsules())
+        self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood(), startingGameState.getCapsules())
         self.walls = startingGameState.getWalls()
+        self.foods = startingGameState.getFood()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
+        self.pacmanNumber = 
 
     def getStartState(self):
         return self.start
@@ -594,6 +596,9 @@ class CustomProblem:
                 return 999999
             cost += 1
         return cost
+    
+    def ableToMove(state):
+        if state.get
 
 def customHeuristic():
 

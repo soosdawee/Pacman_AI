@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+import time
 
 class SearchProblem:
     """
@@ -201,9 +202,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 def customSearch(problem, heuristic=nullHeuristic):
     start = problem.getStartState()
     
-    #print problem.getSuccessors(start)
-   
-    return []
+    print problem.getSuccessors(start)
+    
+    
+    
+    return ['West', 'West', 'North', 'North', 'West']
     
 
     util.raiseNotDefined()

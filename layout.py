@@ -122,7 +122,7 @@ class Layout:
             self.capsules.append((x, y))
         elif layoutChar == 'P':
             self.agentPositions.append( (0, (x, y) ) )
-            self.agentPositions.append((1, (x+1, y)))
+            self.agentPositions.append((1, (x, y+10)))
         elif layoutChar in ['G']:
             self.agentPositions.append( (2, (x, y) ) )
             self.numGhosts += 1

@@ -244,10 +244,10 @@ class PacmanGraphics:
 
         if self.agentImages[agentIndex][0].isPacman != agentState.isPacman: self.swapImages(agentIndex, agentState)
         prevState, prevImage = self.agentImages[agentIndex]
-        if agentState.isPacman:
-            self.animatePacman(agentState, prevState, prevImage)
-        else:
-            self.moveGhost(agentState, agentIndex, prevState, prevImage)
+        #if agentState.isPacman:
+        self.animatePacman(agentState, prevState, prevImage)
+        #else:
+            #self.moveGhost(agentState, agentIndex, prevState, prevImage)
         self.agentImages[agentIndex] = (agentState, prevImage)
 
         if newState._foodEaten != None:
@@ -273,13 +273,14 @@ class PacmanGraphics:
         position = self.getPosition(pacman)
         screen_point = self.to_screen(position)
         endpoints = self.getEndpoints(self.getDirection(pacman))
-
-        width = PACMAN_OUTLINE_WIDTH
-        outlineColor = PACMAN_COLOR
-        fillColor = PACMAN_COLOR
+	
+	if index == 0 or index == 1:
+            width = PACMAN_OUTLINE_WIDTH
+            outlineColor = PACMAN_COLOR
+            fillColor = PACMAN_COLOR
 
         if self.capture:
-            outlineColor = TEAM_COLORS[index % 2]
+            outlineColor = TEAM_COLORS[index % 3]
             fillColor = GHOST_COLORS[index]
             width = PACMAN_CAPTURE_OUTLINE_WIDTH
 
@@ -385,16 +386,18 @@ class PacmanGraphics:
             dx = 0.2
         if dir == 'West':
             dx = -0.2
+           
         moveCircle(eyes[0],(screen_x+self.gridSize*GHOST_SIZE*(-0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2)
         moveCircle(eyes[1],(screen_x+self.gridSize*GHOST_SIZE*(0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2)
         moveCircle(eyes[2],(screen_x+self.gridSize*GHOST_SIZE*(-0.3+dx), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy)), self.gridSize*GHOST_SIZE*0.08)
         moveCircle(eyes[3],(screen_x+self.gridSize*GHOST_SIZE*(0.3+dx), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy)), self.gridSize*GHOST_SIZE*0.08)
+        
 
     def moveGhost(self, ghost, ghostIndex, prevGhost, ghostImageParts):
         old_x, old_y = self.to_screen(self.getPosition(prevGhost))
         new_x, new_y = self.to_screen(self.getPosition(ghost))
         delta = new_x - old_x, new_y - old_y
-
+	print ghostIndex
         for ghostImagePart in ghostImageParts:
             move_by(ghostImagePart, delta)
         refresh()
