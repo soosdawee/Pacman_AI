@@ -201,26 +201,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 def customSearch(problem, heuristic=nullHeuristic):
     start = problem.getStartState()
     
-    print start[2]
-    exploredState = []
-    states = util.PriorityQueue()
-    states.push((start, []), nullHeuristic(start, problem))
-    nCost = 0
-    while not states.isEmpty():
-        state, actions = states.pop()
-        if problem.isGoalState(state):
-            return actions
-        if state not in exploredState:
-            successors = problem.getSuccessors(state)
-            for succ in successors:
-                coordinates = succ[0]
-                if coordinates not in exploredState:
-                    directions = succ[1]
-                    nActions = actions + [directions]
-                    nCost = heuristic(coordinates, problem)
-                    states.push((coordinates, actions + [directions]), nCost)
-        exploredState.append(state)
-    return actions
+    #print problem.getSuccessors(start)
+   
+    return []
     
 
     util.raiseNotDefined()

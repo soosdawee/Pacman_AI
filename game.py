@@ -498,7 +498,7 @@ class GameStateData:
         self.agentStates = []
         numGhosts = 0
         for isPacman, pos in layout.agentPositions:
-            if not isPacman:
+            if isPacman > 1:
                 if numGhosts == numGhostAgents: continue # Max ghosts reached already
                 else: numGhosts += 1
             self.agentStates.append( AgentState( Configuration( pos, Directions.STOP), isPacman) )
@@ -604,7 +604,7 @@ class Game:
                         self.unmute()
                         return
                 else:
-                    agent.registerInitialState(self.state.deepCopy())
+                    agent.registerInitialState(i, self.state.deepCopy())
                 ## TODO: could this exceed the total time
                 self.unmute()
 
@@ -627,7 +627,7 @@ class Game:
                             observation = timed_func(self.state.deepCopy())
                         except TimeoutFunctionException:
                             skip_action = True
-                        move_time += time.time() - start_time
+                        move_time += time.time() - start_time	
                         self.unmute()
                     except Exception,data:
                         self._agentCrash(agentIndex, quiet=False)
@@ -700,7 +700,7 @@ class Game:
                 self.state = self.state.generateSuccessor( agentIndex, action )
 
             # Change the display
-            self.display.update( self.state.data )
+            #self.display.update( self.state.data )
             ###idx = agentIndex - agentIndex % 2 + 1
             ###self.display.update( self.state.makeObservation(idx).data )
 

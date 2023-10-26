@@ -100,7 +100,7 @@ class SearchAgent(Agent):
         self.searchType = globals()[prob]
         print('[SearchAgent] using problem type ' + prob)
 
-    def registerInitialState(self, state):
+    def registerInitialState(self, agentIndex, state):
         """
         This is the first time that the agent sees the layout of the game
         board. Here, we choose a path to the goal. In this phase, the agent
@@ -109,13 +109,16 @@ class SearchAgent(Agent):
 
         state: a GameState object (pacman.py)
         """
+        
         if self.searchFunction == None: raise Exception, "No search function provided for SearchAgent"
         starttime = time.time()
         problem = self.searchType(state) # Makes a new search problem
         self.actions  = self.searchFunction(problem) # Find a path
+        """
         totalCost = problem.getCostOfActions(self.actions)
         print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
         if '_expanded' in dir(problem): print('Search nodes expanded: %d' % problem._expanded)
+        """
 
     def getAction(self, state):
         """
@@ -552,7 +555,7 @@ class CustomProblem:
       foodGrid:       a Grid (see game.py) of either True or False, specifying remaining food
     """
     def __init__(self, startingGameState):
-        self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood(), startingGameState.getCapsules())
+        self.start = (startingGameState.getPacmanPosition(), startingGameState.getPacmanPosition(1), startingGameState.getFood(), startingGameState.getCapsules())
         self.walls = startingGameState.getWalls()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
@@ -592,5 +595,7 @@ class CustomProblem:
             cost += 1
         return cost
 
-    """def foodHeuristic():"""
+def customHeuristic():
+
+    return 0
     

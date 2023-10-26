@@ -86,7 +86,8 @@ class InfoPane:
         self.base = (layout.height + 1) * gridSize
         self.height = INFO_PANE_HEIGHT
         self.fontSize = 24
-        self.textColor = PACMAN_COLOR
+        self.textColor0 = PACMAN_COLOR
+        self.textColor1 = PACMAN_COLOR
         self.drawPane()
 
     def toScreen(self, pos, y = None):
@@ -103,7 +104,8 @@ class InfoPane:
         return x,y
 
     def drawPane(self):
-        self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
+        self.scoreText0 = text( self.toScreen(0, 0  ), self.textColor0, "SCORE:    0", "Times", self.fontSize, "bold")
+        self.scoreText1 = text( self.toScreen(400, 0  ), self.textColor1, "SCORE:    0", "Times", self.fontSize, "bold")
 
     def initializeGhostDistances(self, distances):
         self.ghostDistanceText = []
@@ -118,8 +120,11 @@ class InfoPane:
             t = text( self.toScreen(self.width/2 + self.width/8 * i, 0), GHOST_COLORS[i+1], d, "Times", size, "bold")
             self.ghostDistanceText.append(t)
 
-    def updateScore(self, score):
-        changeText(self.scoreText, "SCORE: % 4d" % score)
+    def updateScore(self, agentIndex, score):
+        if agentIndex == 0: 
+             changeText(self.scoreText0, "SCORE: % 4d" % score)
+        elif agentIndex == 1: 
+             changeText(self.scoreText1, "SCORE: % 4d" % score)
 
     def setTeam(self, isBlue):
         text = "RED TEAM"
@@ -211,7 +216,7 @@ class PacmanGraphics:
     def drawAgentObjects(self, state):
         self.agentImages = [] # (agentState, image)
         for index, agent in enumerate(state.agentStates):
-            if agent.isPacman:
+            if agent.isPacman == 1 or agent.isPacman == 0:
                 image = self.drawPacman(agent, index)
                 self.agentImages.append( (agent, image) )
             else:
@@ -249,7 +254,7 @@ class PacmanGraphics:
             self.removeFood(newState._foodEaten, self.food)
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.capsules)
-        self.infoPane.updateScore(newState.score)
+        #self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
 
