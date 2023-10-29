@@ -112,7 +112,7 @@ class SearchAgent(Agent):
         
         if self.searchFunction == None: raise Exception, "No search function provided for SearchAgent"
         starttime = time.time()
-        problem = self.searchType(state) # Makes a new search problem
+        problem = self.searchType(state, agentIndex) # Makes a new search problem
         self.actions  = self.searchFunction(problem) # Find a path
         """
         totalCost = problem.getCostOfActions(self.actions)
@@ -554,20 +554,29 @@ class CustomProblem:
       pacmanPosition: a tuple (x,y) of integers specifying Pacman's position
       foodGrid:       a Grid (see game.py) of either True or False, specifying remaining food
     """
-    def __init__(self, startingGameState):
-        self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood(), startingGameState.getCapsules())
+    def __init__(self, startingGameState, agentIndex):
+        self.start = (startingGameState.getPacmanPosition(agentIndex), startingGameState.getFood())
         self.walls = startingGameState.getWalls()
         self.foods = startingGameState.getFood()
         self.startingGameState = startingGameState
         self._expanded = 0 # DO NOT CHANGE
         self.heuristicInfo = {} # A dictionary for the heuristic to store information
-        self.pacmanNumber = 
+        self.brotherFound = 0;
+        self.goal = (14, 11)
+        self.targets = startingGameState.getFood().asList()
+        self.toBrother = 0
+        #self.pacmanNumber = 
 
     def getStartState(self):
         return self.start
 
     def isGoalState(self, state):
         return state[1].count() == 0
+    
+    def isIntermediateGoalState(self, state):
+    	if state[0] == self.goal:
+    	    return 1
+    	return 0
 
     def getSuccessors(self, state):
         "Returns successor states, the actions they require, and a cost of 1."
@@ -583,7 +592,7 @@ class CustomProblem:
                 successors.append( ( ((nextx, nexty), nextFood), direction, 1) )
         return successors
 
-    def getCostOfActions(state):
+    def getCostOfActions(self, actions):
         """Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999"""
         x,y= self.getStartState()[0]
@@ -596,11 +605,35 @@ class CustomProblem:
                 return 999999
             cost += 1
         return cost
-    
-    def ableToMove(state):
-        if state.get
-
-def customHeuristic():
-
-    return 0
-    
+    def getAbleToMove(self):
+    	return self.pacmanFound
+    def getFood(self):
+    	return self.foods.asList()
+    def getFood1(self):
+    	return self.foods
+    def getWalls(self):
+    	return self.walls
+    def removeFood(self, newList):
+        self.targets = newList
+    def changeGoal(self, newGoal):
+        self.goal = newGoal
+    def getGoal(self):
+        return self.goal
+    def noMoreFood(self):
+        if len(self.targets) == 0:
+            return 1
+        return 0
+    def getTargets(self):
+        return self.targets
+    def setTargets(self, targets):
+        self.targets = targets
+    def setBrother(self, nr):
+        self.toBrother = nr
+    def broFound(self):
+        if self.brotherFound == 0:
+            self.brotherFound == 1
+            return 1
+        else:
+            return 0
+    def getToBro(self):
+        return self.toBrother

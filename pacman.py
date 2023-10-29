@@ -102,9 +102,9 @@ class GameState:
         state = GameState(self)
 
         # Let agent's logic deal with its action's effects on the board
-        if agentIndex == 0:  # Pacman is moving
+        if agentIndex == 0 or agentIndex == 1:  # Pacman is moving
             state.data._eaten = [False for i in range(state.getNumAgents())]
-            PacmanRules.applyAction( state, action )
+            PacmanRules.applyAction( state, action, agentIndex )
         else:                # A ghost is moving
             GhostRules.applyAction( state, action, agentIndex )
 
@@ -336,16 +336,16 @@ class PacmanRules:
         return Actions.getPossibleActions( state.getPacmanState(agentIndex).configuration, state.data.layout.walls )
     getLegalActions = staticmethod( getLegalActions )
 
-    def applyAction( state, action ):
+    def applyAction( state, action, agentIndex = 0 ):
         """
         Edits the state to reflect the results of the action.
         """
         legal = PacmanRules.getLegalActions( state )
 
-        if action not in legal:
-            raise Exception("Illegal action " + str(action))
+        """if action not in legal:
+            raise Exception("Illegal action " + str(action))"""
 
-        pacmanState = state.data.agentStates[0]
+        pacmanState = state.data.agentStates[agentIndex]
 
         # Update Configuration
         vector = Actions.directionToVector( action, PacmanRules.PACMAN_SPEED )
@@ -422,7 +422,7 @@ class GhostRules:
     decrementTimer = staticmethod( decrementTimer )
 
     def checkDeath( state, agentIndex):
-        pacmanPosition = state.getPacmanPosition()
+        pacmanPosition = state.getPacmanPosition(agentIndex)
         if agentIndex == 0 or agentIndex == 1: # Pacman just moved; Anyone can kill him
             for index in range( 2, len( state.data.agentStates ) ):
                 ghostState = state.data.agentStates[index]

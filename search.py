@@ -198,19 +198,164 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         exploredState.append(state)
     return actions
     util.raiseNotDefined()
+    
+def customHeuristic(coordinates, target, problem):
+    count = 0
+    count1 = 0
+    x,y = coordinates
+    while x < target[0]:
+        x += 1
+        if problem.getWalls()[x][y]:
+            count += 1
+    
+    while x >= target[0]:
+        x -= 1
+        if problem.getWalls()[x][y]:
+            count += 1
+    
+    while y < target[1]:
+        y += 1
+        if problem.getWalls()[x][y]:
+            count += 1
+    while y > target[1]:
+        y -= 1
+        if problem.getWalls()[x][y]:
+            count += 1
+    x,y = coordinates
+    while y < target[1]:
+        y += 1
+        if problem.getWalls()[x][y]:
+            count1 += 1
+    while y > target[1]:
+        y -= 1
+        if problem.getWalls()[x][y]:
+            count1 += 1
+      
+    while x < target[0]:
+        x += 1
+        if problem.getWalls()[x][y]:
+            count1 += 1
+    
+    while x >= target[0]:
+        x -= 1
+        if problem.getWalls()[x][y]:
+            count1 += 1
+    
+    return min(count, count1)
 
-def customSearch(problem, heuristic=nullHeuristic):
+def visitedAlready(coordinates, grid, visited):
+    	for v in visited:
+    	    if coordinates == v[0] and grid == v[1]:
+    	        return 0
+        return 1
+
+def getNewGoal(position, foods, problem):
+    goals = util.PriorityQueue()
+    for f in foods:
+        goals.push(f, customHeuristic(position, f, problem))
+    toReturn = goals.pop()
+    foods.remove(toReturn)
+    problem.removeFood(foods)
+    return toReturn
+    
+def partitionFood(start, foods, problem):
+    list1 = []
+    list2 = []
+    aux1 = getNewGoal(start, foods, problem)
+    aux2 = getNewGoal(start, foods, problem)
+    list1.append(aux1)
+    list2.append(aux2)
+    print aux1, aux2
+    
+    while not problem.noMoreFood():
+        aux1 = getNewGoal(aux1, foods, problem)
+        aux2 = getNewGoal(aux2, foods, problem)
+        list1.append(aux1)
+        list2.append(aux2)
+        print aux1, aux2
+   
+    return (list1, list2)
+        
+
+def firstPacman(problem, heuristic=customHeuristic):
     start = problem.getStartState()
+    visited = []
+    states = util.PriorityQueue()
+    states.push((start, []), nullHeuristic(start))
+    goal = problem.getGoal()
+    #print problem.getTargets()
+    list1, list2 = partitionFood(goal, problem.getTargets(), problem)
+    problem.setTargets(list1)
+    #print problem.getTargets()
     
-    print problem.getSuccessors(start)
+    while not states.isEmpty():
+        state, actions = states.pop()
+        if state not in visited:
+            successors = problem.getSuccessors(state)
+            for succ in successors:
+                coordinates = succ[0][0]
+            	if visitedAlready(coordinates, succ[0][1], visited):
+            	    direction = succ[1]
+            	    acc = actions + [direction]
+            	    cost = problem.getCostOfActions(acc) + customHeuristic(coordinates, goal, problem)
+            	    states.push((succ[0], acc), cost)
+        visited.append(state)
+        if problem.isIntermediateGoalState(state):
+            if problem.noMoreFood():
+                return actions
+            else:
+                if problem.broFound():
+                    problem.setBrother(len(actions))
+                newGoal = getNewGoal(state[0], problem.getTargets(), problem)
+                problem.changeGoal(newGoal)
+                while not states.isEmpty():
+                    states.pop()
+                visited = []
+                states.push((state, actions), 0)
+    return []
+
+
+def secondPacman(problem, heuristic=customHeuristic):
+    start = problem.getStartState()
+    visited = []
+    states = util.PriorityQueue()
+    lista = []
+    for x in range(24):
+        lista.append('Stop')
+    print lista
+    states.push((start, lista), nullHeuristic(start))
+    goal = problem.getGoal()
+    #print problem.getTargets()
+    list1, list2 = partitionFood(start[0], problem.getTargets(), problem)
+    problem.setTargets(list2)
+    #print problem.getTargets()
     
-    
-    
-    return ['West', 'West', 'North', 'North', 'West']
+    while not states.isEmpty():
+        state, actions = states.pop()
+        if state not in visited:
+            successors = problem.getSuccessors(state)
+            for succ in successors:
+                coordinates = succ[0][0]
+            	if visitedAlready(coordinates, succ[0][1], visited):
+            	    direction = succ[1]
+            	    acc = actions + [direction]
+            	    cost = problem.getCostOfActions(acc) + customHeuristic(coordinates, goal, problem)
+            	    states.push((succ[0], acc), cost)
+        visited.append(state)
+        if problem.isIntermediateGoalState(state):
+            if problem.noMoreFood():
+                return actions
+            else:
+                newGoal = getNewGoal(state[0], problem.getTargets(), problem)
+                problem.changeGoal(newGoal)
+                while not states.isEmpty():
+                    states.pop()
+                visited = []
+                states.push((state, actions), 0)
+    return []
     
 
     util.raiseNotDefined()
-
 
 # Abbreviations
 bfs = breadthFirstSearch
@@ -218,5 +363,6 @@ dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
 bfs1 = breadthFirstSearch1
-cs = customSearch
+pac = firstPacman
+man = secondPacman
 

@@ -153,7 +153,7 @@ class AgentState:
         return state
 
     def getPosition(self):
-        if self.configuration == None: return None
+        #if self.configuration == None: return None
         return self.configuration.getPosition()
 
     def getDirection(self):
